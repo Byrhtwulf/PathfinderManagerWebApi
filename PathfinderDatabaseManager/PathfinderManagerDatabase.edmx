@@ -1,0 +1,402 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="pathfinder_managerModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.5" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Monster_Additional_Notes">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="500" />
+          <Property Name="Notes" Type="varchar" MaxLength="1000" />
+          <Property Name="Monster_ID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Monster_Attack_Groups">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="500" />
+          <Property Name="Monster_ID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Monster_Attacks">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="500" />
+          <Property Name="To_Hit" Type="varchar" MaxLength="500" />
+          <Property Name="Dice_Count" Type="uint" />
+          <Property Name="Dice_Value" Type="uint" />
+          <Property Name="Bonus_Damage" Type="uint" />
+          <Property Name="Lower_Crit_Range" Type="int" />
+          <Property Name="Additional Effects" Type="varchar" MaxLength="500" />
+          <Property Name="Attack_Group_ID" Type="int" />
+        </EntityType>
+        <EntityType Name="Monsters">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="Type" Type="varchar" MaxLength="500" />
+          <Property Name="Initiative" Type="uint" />
+          <Property Name="Senses" Type="varchar" MaxLength="500" />
+          <Property Name="Auras" Type="varchar" MaxLength="500" />
+          <Property Name="AC" Type="varchar" MaxLength="500" />
+          <Property Name="HP" Type="uint" />
+          <Property Name="HD" Type="uint" />
+          <Property Name="HP_Mods" Type="varchar" MaxLength="500" />
+          <Property Name="Fortitude" Type="uint" />
+          <Property Name="Reflex" Type="uint" />
+          <Property Name="Will" Type="uint" />
+          <Property Name="Save_Mods" Type="varchar" MaxLength="500" />
+          <Property Name="Defenses" Type="varchar" MaxLength="500" />
+          <Property Name="Defensive_Abilities" Type="varchar" MaxLength="500" />
+          <Property Name="Weaknesses" Type="varchar" MaxLength="500" />
+          <Property Name="Speed" Type="varchar" MaxLength="500" />
+          <Property Name="Space" Type="varchar" MaxLength="500" />
+          <Property Name="Reach" Type="varchar" MaxLength="500" />
+          <Property Name="Base_Attack" Type="uint" />
+          <Property Name="CMB" Type="uint" />
+          <Property Name="CMB_Mods" Type="varchar" MaxLength="500" />
+          <Property Name="CMD" Type="varchar" MaxLength="500" />
+          <Property Name="Special_Attacks" Type="varchar" MaxLength="500" />
+          <Property Name="Special_Qualities" Type="varchar" MaxLength="500" />
+          <Property Name="Ability_Scores" Type="varchar" MaxLength="500" />
+          <Property Name="Feats" Type="varchar" MaxLength="500" />
+          <Property Name="Skills" Type="varchar" MaxLength="500" />
+          <Property Name="Description" Type="varchar" MaxLength="500" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'def.pathfinder_manager.Monster_Names' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Monster_Names">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Name" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="500" Nullable="false" />
+        </EntityType>
+        <Association Name="Attack_Group_ID">
+          <End Role="Monster_Attack_Groups" Type="Self.Monster_Attack_Groups" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Monster_Attacks" Type="Self.Monster_Attacks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Monster_Attack_Groups">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Monster_Attacks">
+              <PropertyRef Name="Attack_Group_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Monster_Additional_Notes_ID">
+          <End Role="Monsters" Type="Self.Monsters" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Monster_Additional_Notes" Type="Self.Monster_Additional_Notes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Monsters">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Monster_Additional_Notes">
+              <PropertyRef Name="Monster_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Monster_ID">
+          <End Role="Monsters" Type="Self.Monsters" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Monster_Attack_Groups" Type="Self.Monster_Attack_Groups" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Monsters">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Monster_Attack_Groups">
+              <PropertyRef Name="Monster_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="pathfinder_managerModelStoreContainer">
+          <EntitySet Name="Monster_Additional_Notes" EntityType="Self.Monster_Additional_Notes" Schema="pathfinder_manager" store:Type="Tables" />
+          <EntitySet Name="Monster_Attack_Groups" EntityType="Self.Monster_Attack_Groups" Schema="pathfinder_manager" store:Type="Tables" />
+          <EntitySet Name="Monster_Attacks" EntityType="Self.Monster_Attacks" Schema="pathfinder_manager" store:Type="Tables" />
+          <EntitySet Name="Monsters" EntityType="Self.Monsters" Schema="pathfinder_manager" store:Type="Tables" />
+          <EntitySet Name="Monster_Names" EntityType="Self.Monster_Names" store:Type="Views" store:Schema="pathfinder_manager">
+            <DefiningQuery>SELECT
+`Monster_Names`.`ID`, 
+`Monster_Names`.`Name`
+FROM `Monster_Names` AS `Monster_Names`</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="Attack_Group_ID" Association="Self.Attack_Group_ID">
+            <End Role="Monster_Attack_Groups" EntitySet="Monster_Attack_Groups" />
+            <End Role="Monster_Attacks" EntitySet="Monster_Attacks" />
+          </AssociationSet>
+          <AssociationSet Name="Monster_Additional_Notes_ID" Association="Self.Monster_Additional_Notes_ID">
+            <End Role="Monsters" EntitySet="Monsters" />
+            <End Role="Monster_Additional_Notes" EntitySet="Monster_Additional_Notes" />
+          </AssociationSet>
+          <AssociationSet Name="Monster_ID" Association="Self.Monster_ID">
+            <End Role="Monsters" EntitySet="Monsters" />
+            <End Role="Monster_Attack_Groups" EntitySet="Monster_Attack_Groups" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="pathfinder_managerModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Monster_Attack_Groups">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Monster_ID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Monster_Attacks" Relationship="Self.Attack_Group_ID" FromRole="Monster_Attack_Groups" ToRole="Monster_Attacks" />
+          <NavigationProperty Name="Monster" Relationship="Self.Monster_ID" FromRole="Monster_Attack_Groups" ToRole="Monsters" />
+        </EntityType>
+        <EntityType Name="Monster_Attacks">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="To_Hit" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Additional_Effects" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Attack_Group_ID" Type="Int32" />
+          <NavigationProperty Name="Monster_Attack_Groups" Relationship="Self.Attack_Group_ID" FromRole="Monster_Attacks" ToRole="Monster_Attack_Groups" />
+          <Property Name="Dice_Count" Type="Int64" />
+          <Property Name="Dice_Value" Type="Int64" />
+          <Property Name="Bonus_Damage" Type="Int64" />
+          <Property Name="Lower_Crit_Range" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Monster">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="500" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Type" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Initiative" Type="Int64" />
+          <Property Name="Senses" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Auras" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="AC" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="HP" Type="Int64" />
+          <Property Name="HD" Type="Int64" />
+          <Property Name="HP_Mods" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Fortitude" Type="Int64" />
+          <Property Name="Reflex" Type="Int64" />
+          <Property Name="Will" Type="Int64" />
+          <Property Name="Save_Mods" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Defenses" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Defensive_Abilities" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Weaknesses" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Speed" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Space" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Reach" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Base_Attack" Type="Int64" />
+          <Property Name="CMB" Type="Int64" />
+          <Property Name="CMB_Mods" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="CMD" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Special_Attacks" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Special_Qualities" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Ability_Scores" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Feats" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Skills" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Monster_Attack_Groups" Relationship="Self.Monster_ID" FromRole="Monsters" ToRole="Monster_Attack_Groups" />
+          <NavigationProperty Name="Monster_Additional_Notes" Relationship="pathfinder_managerModel.Monster_Additional_Notes_ID" FromRole="Monster" ToRole="Monster_Additional_Notes" />
+        </EntityType>
+        <Association Name="Attack_Group_ID">
+          <End Role="Monster_Attack_Groups" Type="Self.Monster_Attack_Groups" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Monster_Attacks" Type="Self.Monster_Attacks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Monster_Attack_Groups">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Monster_Attacks">
+              <PropertyRef Name="Attack_Group_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Monster_ID">
+          <End Role="Monsters" Type="Self.Monster" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Monster_Attack_Groups" Type="Self.Monster_Attack_Groups" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Monsters">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Monster_Attack_Groups">
+              <PropertyRef Name="Monster_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="pathfinder_managerEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Monster_Attack_Groups" EntityType="Self.Monster_Attack_Groups" />
+          <EntitySet Name="Monster_Attacks" EntityType="Self.Monster_Attacks" />
+          <EntitySet Name="Monsters" EntityType="Self.Monster" />
+          <AssociationSet Name="Attack_Group_ID" Association="Self.Attack_Group_ID">
+            <End Role="Monster_Attack_Groups" EntitySet="Monster_Attack_Groups" />
+            <End Role="Monster_Attacks" EntitySet="Monster_Attacks" />
+          </AssociationSet>
+          <AssociationSet Name="Monster_ID" Association="Self.Monster_ID">
+            <End Role="Monsters" EntitySet="Monsters" />
+            <End Role="Monster_Attack_Groups" EntitySet="Monster_Attack_Groups" />
+          </AssociationSet>
+          <EntitySet Name="Monster_Additional_Notes" EntityType="pathfinder_managerModel.Monster_Additional_Notes" />
+          <AssociationSet Name="Monster_Additional_Notes_ID" Association="pathfinder_managerModel.Monster_Additional_Notes_ID">
+            <End Role="Monster" EntitySet="Monsters" />
+            <End Role="Monster_Additional_Notes" EntitySet="Monster_Additional_Notes" />
+          </AssociationSet>
+          <EntitySet Name="Monster_Names" EntityType="pathfinder_managerModel.Monster_Names" />
+        </EntityContainer>
+        <EntityType Name="Monster_Additional_Notes">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Notes" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="Monster_ID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Monster" Relationship="pathfinder_managerModel.Monster_Additional_Notes_ID" FromRole="Monster_Additional_Notes" ToRole="Monster" />
+        </EntityType>
+        <Association Name="Monster_Additional_Notes_ID">
+          <End Type="pathfinder_managerModel.Monster" Role="Monster" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="pathfinder_managerModel.Monster_Additional_Notes" Role="Monster_Additional_Notes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Monster">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Monster_Additional_Notes">
+              <PropertyRef Name="Monster_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Monster_Names">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Name" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="pathfinder_managerModelStoreContainer" CdmEntityContainer="pathfinder_managerEntities">
+          <EntitySetMapping Name="Monster_Attack_Groups">
+            <EntityTypeMapping TypeName="pathfinder_managerModel.Monster_Attack_Groups">
+              <MappingFragment StoreEntitySet="Monster_Attack_Groups">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Monster_ID" ColumnName="Monster_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Monster_Attacks">
+            <EntityTypeMapping TypeName="pathfinder_managerModel.Monster_Attacks">
+              <MappingFragment StoreEntitySet="Monster_Attacks">
+                <ScalarProperty Name="Lower_Crit_Range" ColumnName="Lower_Crit_Range" />
+                <ScalarProperty Name="Bonus_Damage" ColumnName="Bonus_Damage" />
+                <ScalarProperty Name="Dice_Value" ColumnName="Dice_Value" />
+                <ScalarProperty Name="Dice_Count" ColumnName="Dice_Count" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="To_Hit" ColumnName="To_Hit" />
+                <ScalarProperty Name="Additional_Effects" ColumnName="Additional Effects" />
+                <ScalarProperty Name="Attack_Group_ID" ColumnName="Attack_Group_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Monsters">
+            <EntityTypeMapping TypeName="pathfinder_managerModel.Monster">
+              <MappingFragment StoreEntitySet="Monsters">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Initiative" ColumnName="Initiative" />
+                <ScalarProperty Name="Senses" ColumnName="Senses" />
+                <ScalarProperty Name="Auras" ColumnName="Auras" />
+                <ScalarProperty Name="AC" ColumnName="AC" />
+                <ScalarProperty Name="HP" ColumnName="HP" />
+                <ScalarProperty Name="HD" ColumnName="HD" />
+                <ScalarProperty Name="HP_Mods" ColumnName="HP_Mods" />
+                <ScalarProperty Name="Fortitude" ColumnName="Fortitude" />
+                <ScalarProperty Name="Reflex" ColumnName="Reflex" />
+                <ScalarProperty Name="Will" ColumnName="Will" />
+                <ScalarProperty Name="Save_Mods" ColumnName="Save_Mods" />
+                <ScalarProperty Name="Defenses" ColumnName="Defenses" />
+                <ScalarProperty Name="Defensive_Abilities" ColumnName="Defensive_Abilities" />
+                <ScalarProperty Name="Weaknesses" ColumnName="Weaknesses" />
+                <ScalarProperty Name="Speed" ColumnName="Speed" />
+                <ScalarProperty Name="Space" ColumnName="Space" />
+                <ScalarProperty Name="Reach" ColumnName="Reach" />
+                <ScalarProperty Name="Base_Attack" ColumnName="Base_Attack" />
+                <ScalarProperty Name="CMB" ColumnName="CMB" />
+                <ScalarProperty Name="CMB_Mods" ColumnName="CMB_Mods" />
+                <ScalarProperty Name="CMD" ColumnName="CMD" />
+                <ScalarProperty Name="Special_Attacks" ColumnName="Special_Attacks" />
+                <ScalarProperty Name="Special_Qualities" ColumnName="Special_Qualities" />
+                <ScalarProperty Name="Ability_Scores" ColumnName="Ability_Scores" />
+                <ScalarProperty Name="Feats" ColumnName="Feats" />
+                <ScalarProperty Name="Skills" ColumnName="Skills" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Monster_Additional_Notes">
+            <EntityTypeMapping TypeName="pathfinder_managerModel.Monster_Additional_Notes">
+              <MappingFragment StoreEntitySet="Monster_Additional_Notes">
+                <ScalarProperty Name="Monster_ID" ColumnName="Monster_ID" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Monster_Names">
+            <EntityTypeMapping TypeName="pathfinder_managerModel.Monster_Names">
+              <MappingFragment StoreEntitySet="Monster_Names">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
