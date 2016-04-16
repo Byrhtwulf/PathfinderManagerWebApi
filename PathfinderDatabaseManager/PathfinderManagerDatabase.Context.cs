@@ -26,9 +26,9 @@ namespace PathfinderDatabaseManager
         }
     
         public virtual DbSet<Monster_Attack_Groups> Monster_Attack_Groups { get; set; }
-        public virtual DbSet<Monster_Attacks> Monster_Attacks { get; set; }
         public virtual DbSet<Monster> Monsters { get; set; }
         public virtual DbSet<Monster_Additional_Notes> Monster_Additional_Notes { get; set; }
         public virtual DbSet<Monster_Names> Monster_Names { get; set; }
+        public virtual DbSet<Monster_Attacks> Monster_Attacks { get; set; }
     }
 }

@@ -33,7 +33,7 @@
           <Property Name="Dice_Value" Type="uint" />
           <Property Name="Bonus_Damage" Type="uint" />
           <Property Name="Lower_Crit_Range" Type="int" />
-          <Property Name="Additional Effects" Type="varchar" MaxLength="500" />
+          <Property Name="Additional_Effects" Type="varchar" MaxLength="500" />
           <Property Name="Attack_Group_ID" Type="int" />
         </EntityType>
         <EntityType Name="Monsters">
@@ -158,23 +158,8 @@ FROM `Monster_Names` AS `Monster_Names`</DefiningQuery>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="Monster_ID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Monster_Attacks" Relationship="Self.Attack_Group_ID" FromRole="Monster_Attack_Groups" ToRole="Monster_Attacks" />
           <NavigationProperty Name="Monster" Relationship="Self.Monster_ID" FromRole="Monster_Attack_Groups" ToRole="Monsters" />
-        </EntityType>
-        <EntityType Name="Monster_Attacks">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="To_Hit" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="Additional_Effects" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="Attack_Group_ID" Type="Int32" />
-          <NavigationProperty Name="Monster_Attack_Groups" Relationship="Self.Attack_Group_ID" FromRole="Monster_Attacks" ToRole="Monster_Attack_Groups" />
-          <Property Name="Dice_Count" Type="Int64" />
-          <Property Name="Dice_Value" Type="Int64" />
-          <Property Name="Bonus_Damage" Type="Int64" />
-          <Property Name="Lower_Crit_Range" Type="Int32" />
+          <NavigationProperty Name="Monster_Attacks" Relationship="pathfinder_managerModel.Attack_Group_ID" FromRole="Monster_Attack_Groups" ToRole="Monster_Attacks" />
         </EntityType>
         <EntityType Name="Monster">
           <Key>
@@ -213,20 +198,6 @@ FROM `Monster_Names` AS `Monster_Names`</DefiningQuery>
           <NavigationProperty Name="Monster_Attack_Groups" Relationship="Self.Monster_ID" FromRole="Monsters" ToRole="Monster_Attack_Groups" />
           <NavigationProperty Name="Monster_Additional_Notes" Relationship="pathfinder_managerModel.Monster_Additional_Notes_ID" FromRole="Monster" ToRole="Monster_Additional_Notes" />
         </EntityType>
-        <Association Name="Attack_Group_ID">
-          <End Role="Monster_Attack_Groups" Type="Self.Monster_Attack_Groups" Multiplicity="0..1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Monster_Attacks" Type="Self.Monster_Attacks" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Monster_Attack_Groups">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Monster_Attacks">
-              <PropertyRef Name="Attack_Group_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="Monster_ID">
           <End Role="Monsters" Type="Self.Monster" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -243,12 +214,7 @@ FROM `Monster_Names` AS `Monster_Names`</DefiningQuery>
         </Association>
         <EntityContainer Name="pathfinder_managerEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Monster_Attack_Groups" EntityType="Self.Monster_Attack_Groups" />
-          <EntitySet Name="Monster_Attacks" EntityType="Self.Monster_Attacks" />
           <EntitySet Name="Monsters" EntityType="Self.Monster" />
-          <AssociationSet Name="Attack_Group_ID" Association="Self.Attack_Group_ID">
-            <End Role="Monster_Attack_Groups" EntitySet="Monster_Attack_Groups" />
-            <End Role="Monster_Attacks" EntitySet="Monster_Attacks" />
-          </AssociationSet>
           <AssociationSet Name="Monster_ID" Association="Self.Monster_ID">
             <End Role="Monsters" EntitySet="Monsters" />
             <End Role="Monster_Attack_Groups" EntitySet="Monster_Attack_Groups" />
@@ -259,6 +225,11 @@ FROM `Monster_Names` AS `Monster_Names`</DefiningQuery>
             <End Role="Monster_Additional_Notes" EntitySet="Monster_Additional_Notes" />
           </AssociationSet>
           <EntitySet Name="Monster_Names" EntityType="pathfinder_managerModel.Monster_Names" />
+          <EntitySet Name="Monster_Attacks" EntityType="pathfinder_managerModel.Monster_Attacks" />
+          <AssociationSet Name="Attack_Group_ID" Association="pathfinder_managerModel.Attack_Group_ID">
+            <End Role="Monster_Attack_Groups" EntitySet="Monster_Attack_Groups" />
+            <End Role="Monster_Attacks" EntitySet="Monster_Attacks" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Monster_Additional_Notes">
           <Key>
@@ -292,6 +263,35 @@ FROM `Monster_Names` AS `Monster_Names`</DefiningQuery>
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="Monster_Attacks">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="To_Hit" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Dice_Count" Type="Int64" />
+          <Property Name="Dice_Value" Type="Int64" />
+          <Property Name="Bonus_Damage" Type="Int64" />
+          <Property Name="Lower_Crit_Range" Type="Int32" />
+          <Property Name="Additional_Effects" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Attack_Group_ID" Type="Int32" />
+          <NavigationProperty Name="Monster_Attack_Groups" Relationship="pathfinder_managerModel.Attack_Group_ID" FromRole="Monster_Attacks" ToRole="Monster_Attack_Groups" />
+        </EntityType>
+        <Association Name="Attack_Group_ID">
+          <End Type="pathfinder_managerModel.Monster_Attack_Groups" Role="Monster_Attack_Groups" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="pathfinder_managerModel.Monster_Attacks" Role="Monster_Attacks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Monster_Attack_Groups">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Monster_Attacks">
+              <PropertyRef Name="Attack_Group_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -304,21 +304,6 @@ FROM `Monster_Names` AS `Monster_Names`</DefiningQuery>
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Monster_ID" ColumnName="Monster_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Monster_Attacks">
-            <EntityTypeMapping TypeName="pathfinder_managerModel.Monster_Attacks">
-              <MappingFragment StoreEntitySet="Monster_Attacks">
-                <ScalarProperty Name="Lower_Crit_Range" ColumnName="Lower_Crit_Range" />
-                <ScalarProperty Name="Bonus_Damage" ColumnName="Bonus_Damage" />
-                <ScalarProperty Name="Dice_Value" ColumnName="Dice_Value" />
-                <ScalarProperty Name="Dice_Count" ColumnName="Dice_Count" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="To_Hit" ColumnName="To_Hit" />
-                <ScalarProperty Name="Additional_Effects" ColumnName="Additional Effects" />
-                <ScalarProperty Name="Attack_Group_ID" ColumnName="Attack_Group_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -371,6 +356,21 @@ FROM `Monster_Names` AS `Monster_Names`</DefiningQuery>
           <EntitySetMapping Name="Monster_Names">
             <EntityTypeMapping TypeName="pathfinder_managerModel.Monster_Names">
               <MappingFragment StoreEntitySet="Monster_Names">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Monster_Attacks">
+            <EntityTypeMapping TypeName="pathfinder_managerModel.Monster_Attacks">
+              <MappingFragment StoreEntitySet="Monster_Attacks">
+                <ScalarProperty Name="Attack_Group_ID" ColumnName="Attack_Group_ID" />
+                <ScalarProperty Name="Additional_Effects" ColumnName="Additional_Effects" />
+                <ScalarProperty Name="Lower_Crit_Range" ColumnName="Lower_Crit_Range" />
+                <ScalarProperty Name="Bonus_Damage" ColumnName="Bonus_Damage" />
+                <ScalarProperty Name="Dice_Value" ColumnName="Dice_Value" />
+                <ScalarProperty Name="Dice_Count" ColumnName="Dice_Count" />
+                <ScalarProperty Name="To_Hit" ColumnName="To_Hit" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>

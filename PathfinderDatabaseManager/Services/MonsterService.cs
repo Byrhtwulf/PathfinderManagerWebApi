@@ -24,6 +24,29 @@ namespace PathfinderDatabaseManager.Services
             return monsterNames;
         }
 
+        public static Monster GetMonsterById(int monsterId)
+        {
+            Monster monster = db.Monsters.Where(x => x.ID == monsterId).FirstOrDefault();
+            if (monster != null)
+            {
+                return monster;
+            }
+            return new Monster();
+        }
+
+        public static Monster GetMonsterByName(string monsterName)
+        {
+            if (!string.IsNullOrWhiteSpace(monsterName))
+            {
+                Monster monster = db.Monsters.Where(x => x.Name.ToLower().Trim() == monsterName.ToLower().Trim()).FirstOrDefault();
+                if (monster != null)
+                {
+                    return monster;
+                }
+            }
+            return new Monster();
+        }
+
         public static Boolean CreateMonster(PathfinderDatabaseManager.Models.Monster newMonster){
             try
             {
@@ -36,6 +59,7 @@ namespace PathfinderDatabaseManager.Services
                 databaseMonster.AC = newMonster.AC;
                 databaseMonster.HP = newMonster.HP != "" ? int.Parse(newMonster.HP) : 0;
                 databaseMonster.HP_Mods = newMonster.HPmods;
+                databaseMonster.HD = newMonster.HD;
                 databaseMonster.Fortitude = newMonster.fortitude != "" ? int.Parse(newMonster.fortitude) : 0;
                 databaseMonster.Reflex = newMonster.reflex != "" ? int.Parse(newMonster.reflex) : 0;
                 databaseMonster.Will = newMonster.will != "" ? int.Parse(newMonster.will) : 0;
@@ -94,11 +118,12 @@ namespace PathfinderDatabaseManager.Services
                 foreach (GroupAttack groupAttack in attack.groupAttacks)
                 {
                     PathfinderDatabaseManager.Monster_Attacks newAttack = new PathfinderDatabaseManager.Monster_Attacks();
-                    newAttack.Name = groupAttack.name;
-                    newAttack.To_Hit = groupAttack.bonusToHit;
-                    newAttack.Dice_Count = int.Parse(groupAttack.diceCount);
-                    newAttack.Dice_Value = int.Parse(groupAttack.diceValue);
-                    newAttack.Bonus_Damage = int.Parse(groupAttack.diceBonus);
+                    newAttack.Name = groupAttack.name != "" ? groupAttack.name : "";
+                    newAttack.To_Hit = groupAttack.bonusToHit != "" ? groupAttack.bonusToHit : "";
+                    newAttack.Dice_Count = groupAttack.diceCount != "" ? int.Parse(groupAttack.diceCount) : 0;
+                    newAttack.Dice_Value = groupAttack.diceValue != "" ? int.Parse(groupAttack.diceValue) : 0;
+                    newAttack.Bonus_Damage = groupAttack.diceBonus != "" ? int.Parse(groupAttack.diceBonus) : 0;
+                    newAttack.Lower_Crit_Range = groupAttack.lowerCriticalRange != "" ? int.Parse(groupAttack.lowerCriticalRange) : 20;
                     newAttack.Additional_Effects = groupAttack.additionalEffects;
                     groupAttacks.Add(newAttack);
 

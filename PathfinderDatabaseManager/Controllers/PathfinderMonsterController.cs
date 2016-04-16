@@ -19,35 +19,24 @@ namespace PathfinderDatabaseManager.Controllers
     {
 
         // GET api/<controller>
-        public IEnumerable<string> Get(string data)
+        public Monster Get(string monsterName)
         {
-            List<Monster> monsters = MonsterService.GetAllMonsters();
-            Debug.WriteLine("Data: " + data);
-            foreach (Monster m in monsters)
-            {
-                Debug.WriteLine("Monster Name: " + m.Name);
-            }
-            return new string[] { "value1", "value2" };
+            Monster monster = MonsterService.GetMonsterByName(monsterName);
+            return monster;
         }
 
         // GET api/<controller>/5
         public string Get(int id)
         {
-            Debug.WriteLine("Get With Data");
-            return "value";
-        }
-
-        // POST api/<controller>
-
-        public void test(string data)
-        {
-            List<Monster> monsters = MonsterService.GetAllMonsters();
-            Debug.WriteLine("Data: " + data);
-            foreach (Monster m in monsters)
+            Monster monster = MonsterService.GetMonsterById(id);
+            string monsterString = JsonConvert.SerializeObject(monster, Formatting.Indented,
+            new JsonSerializerSettings
             {
-                Debug.WriteLine("Monster Name: " + m.Name);
-            }
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+            return monsterString;
         }
+
 
         // PUT api/<controller>/5
         public void Put([FromBody]MonsterData monsterData)

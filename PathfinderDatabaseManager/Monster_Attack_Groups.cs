@@ -23,7 +23,7 @@ namespace PathfinderDatabaseManager
         public string Name { get; set; }
         public int Monster_ID { get; set; }
     
-        public virtual ICollection<Monster_Attacks> Monster_Attacks { get; set; }
         public virtual Monster Monster { get; set; }
+        public virtual ICollection<Monster_Attacks> Monster_Attacks { get; set; }
     }
 }

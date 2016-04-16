@@ -21,6 +21,7 @@ namespace PathfinderDatabaseManager.Controllers
         public List<Monster_Names> Get()
         {
             List<Monster_Names> monsters = MonsterService.GetAllMonsterNames();
+            Debug.WriteLine("Accessing Get All Monster Names");
             //var json = JsonConvert.SerializeObject(monsters);
             //JToken token = JObject.Parse(json);
             return monsters;

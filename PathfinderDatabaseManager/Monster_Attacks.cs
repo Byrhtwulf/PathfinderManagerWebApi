@@ -17,12 +17,12 @@ namespace PathfinderDatabaseManager
         public int ID { get; set; }
         public string Name { get; set; }
         public string To_Hit { get; set; }
-        public string Additional_Effects { get; set; }
-        public Nullable<int> Attack_Group_ID { get; set; }
         public Nullable<long> Dice_Count { get; set; }
         public Nullable<long> Dice_Value { get; set; }
         public Nullable<long> Bonus_Damage { get; set; }
         public Nullable<int> Lower_Crit_Range { get; set; }
+        public string Additional_Effects { get; set; }
+        public Nullable<int> Attack_Group_ID { get; set; }
     
         public virtual Monster_Attack_Groups Monster_Attack_Groups { get; set; }
     }
