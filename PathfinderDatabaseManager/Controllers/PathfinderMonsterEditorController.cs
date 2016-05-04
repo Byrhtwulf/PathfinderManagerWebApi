@@ -15,41 +15,26 @@ using PathfinderDatabaseManager.Models;
 namespace PathfinderDatabaseManager.Controllers
 {
     //[EnableCors(origins: "http://localhost:8000", headers: "*", methods: "*")]
-    public class PathfinderMonsterController : ApiController
+    public class PathfinderMonsterEditorController : ApiController
     {
-
-        // GET api/<controller>
-        public Monster Get(string monsterName)
-        {
-            Monster monster = MonsterService.GetMonsterByName(monsterName);
-            return monster;
-        }
-
-        // GET api/<controller>/5
-        public string Get(int id)
-        {
-            Monster monster = MonsterService.GetMonsterById(id);
-            string monsterString = JsonConvert.SerializeObject(monster, Formatting.Indented,
-            new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            });
-            return monsterString;
-        }
 
 
         // PUT api/<controller>/5
-        public void Put([FromBody]MonsterData monsterData)
+        public void Put(int id, [FromBody]MonsterData monsterData)
         {
             PathfinderDatabaseManager.Models.Monster newMonster = JsonConvert.DeserializeObject<PathfinderDatabaseManager.Models.Monster>(monsterData.monsterDataString);
-            MonsterService.CreateMonster(newMonster);
+            MonsterService.EditMonster(id, newMonster);
         }
 
         // DELETE api/<controller>/5
         public void Delete(int id)
         {
-            
+            MonsterService.DeleteMonster(id);
         }
+    }
+    public class MonsterData
+    {
+        public string monsterDataString { get; set; }
     }
 
   

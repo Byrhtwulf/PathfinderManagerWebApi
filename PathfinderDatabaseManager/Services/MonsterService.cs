@@ -47,6 +47,19 @@ namespace PathfinderDatabaseManager.Services
             return new Monster();
         }
 
+        public static Boolean DeleteMonster(int id)
+        {
+            Monster monster = db.Monsters.Where(x => x.ID == id).FirstOrDefault();
+            if (monster != null)
+            {
+                db.Monsters.Remove(monster);
+                db.SaveChanges();
+                return true;
+            }
+            return false;
+
+        }
+
         public static Boolean CreateMonster(PathfinderDatabaseManager.Models.Monster newMonster){
             try
             {
@@ -95,14 +108,28 @@ namespace PathfinderDatabaseManager.Services
             }
         }
 
+        public static Boolean EditMonster(int id, PathfinderDatabaseManager.Models.Monster newMonster)
+        {
+            Monster oldMonster = db.Monsters.Where(x => x.ID == id).FirstOrDefault();
+            if (oldMonster != null){
+                DeleteMonster(id);
+                CreateMonster(newMonster);
+                return true;
+            }
+            return false;
+        }
+
         private static IList<PathfinderDatabaseManager.Monster_Additional_Notes> ConvertAdditionalNotes(IList<MonsterAdditionalNote> notes){
             List<PathfinderDatabaseManager.Monster_Additional_Notes> monsterNotes = new List<PathfinderDatabaseManager.Monster_Additional_Notes>();
-            foreach (MonsterAdditionalNote note in notes)
+            if (notes != null && notes.Count > 0)
             {
-                PathfinderDatabaseManager.Monster_Additional_Notes newNote = new PathfinderDatabaseManager.Monster_Additional_Notes();
-                newNote.Name = note.noteTitle;
-                newNote.Notes = note.noteBody;
-                monsterNotes.Add(newNote);
+                foreach (MonsterAdditionalNote note in notes)
+                {
+                    PathfinderDatabaseManager.Monster_Additional_Notes newNote = new PathfinderDatabaseManager.Monster_Additional_Notes();
+                    newNote.Name = note.noteTitle;
+                    newNote.Notes = note.noteBody;
+                    monsterNotes.Add(newNote);
+                }
             }
             return monsterNotes;
         }
@@ -110,26 +137,29 @@ namespace PathfinderDatabaseManager.Services
         private static IList<PathfinderDatabaseManager.Monster_Attack_Groups> ConvertAttacks(IList<PathfinderDatabaseManager.Models.Attack> attacks)
         {
             List<PathfinderDatabaseManager.Monster_Attack_Groups> monsterAttacks = new List<PathfinderDatabaseManager.Monster_Attack_Groups>();
-            foreach (Attack attack in attacks)
+            if (attacks != null && attacks.Count > 0)
             {
-                PathfinderDatabaseManager.Monster_Attack_Groups group = new PathfinderDatabaseManager.Monster_Attack_Groups();
-                group.Name = attack.groupName;
-                List<PathfinderDatabaseManager.Monster_Attacks> groupAttacks = new List<PathfinderDatabaseManager.Monster_Attacks>();
-                foreach (GroupAttack groupAttack in attack.groupAttacks)
+                foreach (Attack attack in attacks)
                 {
-                    PathfinderDatabaseManager.Monster_Attacks newAttack = new PathfinderDatabaseManager.Monster_Attacks();
-                    newAttack.Name = groupAttack.name != "" ? groupAttack.name : "";
-                    newAttack.To_Hit = groupAttack.bonusToHit != "" ? groupAttack.bonusToHit : "";
-                    newAttack.Dice_Count = groupAttack.diceCount != "" ? int.Parse(groupAttack.diceCount) : 0;
-                    newAttack.Dice_Value = groupAttack.diceValue != "" ? int.Parse(groupAttack.diceValue) : 0;
-                    newAttack.Bonus_Damage = groupAttack.diceBonus != "" ? int.Parse(groupAttack.diceBonus) : 0;
-                    newAttack.Lower_Crit_Range = groupAttack.lowerCriticalRange != "" ? int.Parse(groupAttack.lowerCriticalRange) : 20;
-                    newAttack.Additional_Effects = groupAttack.additionalEffects;
-                    groupAttacks.Add(newAttack);
+                    PathfinderDatabaseManager.Monster_Attack_Groups group = new PathfinderDatabaseManager.Monster_Attack_Groups();
+                    group.Name = attack.groupName;
+                    List<PathfinderDatabaseManager.Monster_Attacks> groupAttacks = new List<PathfinderDatabaseManager.Monster_Attacks>();
+                    foreach (GroupAttack groupAttack in attack.groupAttacks)
+                    {
+                        PathfinderDatabaseManager.Monster_Attacks newAttack = new PathfinderDatabaseManager.Monster_Attacks();
+                        newAttack.Name = groupAttack.name != "" ? groupAttack.name : "";
+                        newAttack.To_Hit = groupAttack.bonusToHit != "" ? groupAttack.bonusToHit : "";
+                        newAttack.Dice_Count = groupAttack.diceCount != "" ? int.Parse(groupAttack.diceCount) : 0;
+                        newAttack.Dice_Value = groupAttack.diceValue != "" ? int.Parse(groupAttack.diceValue) : 0;
+                        newAttack.Bonus_Damage = groupAttack.diceBonus != "" ? int.Parse(groupAttack.diceBonus) : 0;
+                        newAttack.Lower_Crit_Range = groupAttack.lowerCriticalRange != "" ? int.Parse(groupAttack.lowerCriticalRange) : 20;
+                        newAttack.Additional_Effects = groupAttack.additionalEffects;
+                        groupAttacks.Add(newAttack);
 
+                    }
+                    group.Monster_Attacks = groupAttacks;
+                    monsterAttacks.Add(group);
                 }
-                group.Monster_Attacks = groupAttacks;
-                monsterAttacks.Add(group);
             }
             return monsterAttacks;
         }
