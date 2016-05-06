@@ -39,10 +39,14 @@ namespace PathfinderDatabaseManager.Controllers
 
 
         // PUT api/<controller>/5
-        public void Put([FromBody]MonsterData monsterData)
+        public Monster_Names Put([FromBody]MonsterData monsterData)
         {
             PathfinderDatabaseManager.Models.Monster newMonster = JsonConvert.DeserializeObject<PathfinderDatabaseManager.Models.Monster>(monsterData.monsterDataString);
-            MonsterService.CreateMonster(newMonster);
+            Monster monster = MonsterService.CreateMonster(newMonster);
+            Monster_Names name = new Monster_Names();
+            name.ID = monster.ID;
+            name.Name = monster.Name;
+            return name;
         }
 
         // DELETE api/<controller>/5

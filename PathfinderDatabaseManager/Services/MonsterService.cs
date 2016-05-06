@@ -60,7 +60,7 @@ namespace PathfinderDatabaseManager.Services
 
         }
 
-        public static Boolean CreateMonster(PathfinderDatabaseManager.Models.Monster newMonster){
+        public static Monster CreateMonster(PathfinderDatabaseManager.Models.Monster newMonster){
             try
             {
                 PathfinderDatabaseManager.Monster databaseMonster = new Monster();
@@ -99,24 +99,30 @@ namespace PathfinderDatabaseManager.Services
                 db.Monsters.Add(databaseMonster);
                 db.SaveChanges();
 
-                return true;
+                return databaseMonster;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.ToString());
-                return false;
+                return null;
             }
         }
 
-        public static Boolean EditMonster(int id, PathfinderDatabaseManager.Models.Monster newMonster)
+        public static Monster_Names EditMonster(int id, PathfinderDatabaseManager.Models.Monster newMonster)
         {
             Monster oldMonster = db.Monsters.Where(x => x.ID == id).FirstOrDefault();
             if (oldMonster != null){
                 DeleteMonster(id);
-                CreateMonster(newMonster);
-                return true;
+                Monster m = CreateMonster(newMonster);
+                if (m != null)
+                {
+                    Monster_Names name = new Monster_Names();
+                    name.ID = m.ID;
+                    name.Name = m.Name;
+                    return name;
+                }
             }
-            return false;
+            return null;
         }
 
         private static IList<PathfinderDatabaseManager.Monster_Additional_Notes> ConvertAdditionalNotes(IList<MonsterAdditionalNote> notes){

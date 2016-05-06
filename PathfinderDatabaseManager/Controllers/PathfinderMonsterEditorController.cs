@@ -20,10 +20,15 @@ namespace PathfinderDatabaseManager.Controllers
 
 
         // PUT api/<controller>/5
-        public void Put(int id, [FromBody]MonsterData monsterData)
+        public Monster_Names Put(int id, [FromBody]MonsterData monsterData)
         {
             PathfinderDatabaseManager.Models.Monster newMonster = JsonConvert.DeserializeObject<PathfinderDatabaseManager.Models.Monster>(monsterData.monsterDataString);
-            MonsterService.EditMonster(id, newMonster);
+            Monster_Names name = MonsterService.EditMonster(id, newMonster);
+            if (name != null)
+            {
+                return name;
+            }
+            return null;
         }
 
         // DELETE api/<controller>/5
