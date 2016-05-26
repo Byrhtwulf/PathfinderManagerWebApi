@@ -5,13 +5,23 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="pathfinder_managerModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.5" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Date">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Month" Type="int" />
+          <Property Name="Day" Type="int" />
+          <Property Name="Year" Type="int" />
+          <Property Name="Time" Type="int" />
+        </EntityType>
         <EntityType Name="Monster_Additional_Notes">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="500" />
-          <Property Name="Notes" Type="varchar" MaxLength="1000" />
+          <Property Name="Notes" Type="mediumtext" />
           <Property Name="Monster_ID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Monster_Attack_Groups">
@@ -124,6 +134,7 @@ warning 6002: The table/view 'def.pathfinder_manager.Monster_Names' does not hav
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="pathfinder_managerModelStoreContainer">
+          <EntitySet Name="Date" EntityType="Self.Date" Schema="pathfinder_manager" store:Type="Tables" />
           <EntitySet Name="Monster_Additional_Notes" EntityType="Self.Monster_Additional_Notes" Schema="pathfinder_manager" store:Type="Tables" />
           <EntitySet Name="Monster_Attack_Groups" EntityType="Self.Monster_Attack_Groups" Schema="pathfinder_manager" store:Type="Tables" />
           <EntitySet Name="Monster_Attacks" EntityType="Self.Monster_Attacks" Schema="pathfinder_manager" store:Type="Tables" />
@@ -219,42 +230,19 @@ FROM `Monster_Names` AS `Monster_Names`</DefiningQuery>
             <End Role="Monsters" EntitySet="Monsters" />
             <End Role="Monster_Attack_Groups" EntitySet="Monster_Attack_Groups" />
           </AssociationSet>
-          <EntitySet Name="Monster_Additional_Notes" EntityType="pathfinder_managerModel.Monster_Additional_Notes" />
-          <AssociationSet Name="Monster_Additional_Notes_ID" Association="pathfinder_managerModel.Monster_Additional_Notes_ID">
-            <End Role="Monster" EntitySet="Monsters" />
-            <End Role="Monster_Additional_Notes" EntitySet="Monster_Additional_Notes" />
-          </AssociationSet>
           <EntitySet Name="Monster_Names" EntityType="pathfinder_managerModel.Monster_Names" />
           <EntitySet Name="Monster_Attacks" EntityType="pathfinder_managerModel.Monster_Attacks" />
           <AssociationSet Name="Attack_Group_ID" Association="pathfinder_managerModel.Attack_Group_ID">
             <End Role="Monster_Attack_Groups" EntitySet="Monster_Attack_Groups" />
             <End Role="Monster_Attacks" EntitySet="Monster_Attacks" />
           </AssociationSet>
+          <EntitySet Name="Monster_Additional_Notes" EntityType="pathfinder_managerModel.Monster_Additional_Notes" />
+          <AssociationSet Name="Monster_Additional_Notes_ID" Association="pathfinder_managerModel.Monster_Additional_Notes_ID">
+            <End Role="Monster" EntitySet="Monsters" />
+            <End Role="Monster_Additional_Notes" EntitySet="Monster_Additional_Notes" />
+          </AssociationSet>
+          <EntitySet Name="Dates" EntityType="pathfinder_managerModel.Date" />
         </EntityContainer>
-        <EntityType Name="Monster_Additional_Notes">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="Notes" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
-          <Property Name="Monster_ID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Monster" Relationship="pathfinder_managerModel.Monster_Additional_Notes_ID" FromRole="Monster_Additional_Notes" ToRole="Monster" />
-        </EntityType>
-        <Association Name="Monster_Additional_Notes_ID">
-          <End Type="pathfinder_managerModel.Monster" Role="Monster" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="pathfinder_managerModel.Monster_Additional_Notes" Role="Monster_Additional_Notes" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Monster">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Monster_Additional_Notes">
-              <PropertyRef Name="Monster_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="Monster_Names">
           <Key>
             <PropertyRef Name="ID" />
@@ -292,6 +280,40 @@ FROM `Monster_Names` AS `Monster_Names`</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Monster_Additional_Notes">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Notes" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
+          <Property Name="Monster_ID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Monster" Relationship="pathfinder_managerModel.Monster_Additional_Notes_ID" FromRole="Monster_Additional_Notes" ToRole="Monster" />
+        </EntityType>
+        <Association Name="Monster_Additional_Notes_ID">
+          <End Type="pathfinder_managerModel.Monster" Role="Monster" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="pathfinder_managerModel.Monster_Additional_Notes" Role="Monster_Additional_Notes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Monster">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Monster_Additional_Notes">
+              <PropertyRef Name="Monster_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Date">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Month" Type="Int32" />
+          <Property Name="Day" Type="Int32" />
+          <Property Name="Year" Type="Int32" />
+          <Property Name="Time" Type="Int32" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -343,16 +365,6 @@ FROM `Monster_Names` AS `Monster_Names`</DefiningQuery>
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Monster_Additional_Notes">
-            <EntityTypeMapping TypeName="pathfinder_managerModel.Monster_Additional_Notes">
-              <MappingFragment StoreEntitySet="Monster_Additional_Notes">
-                <ScalarProperty Name="Monster_ID" ColumnName="Monster_ID" />
-                <ScalarProperty Name="Notes" ColumnName="Notes" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Monster_Names">
             <EntityTypeMapping TypeName="pathfinder_managerModel.Monster_Names">
               <MappingFragment StoreEntitySet="Monster_Names">
@@ -372,6 +384,27 @@ FROM `Monster_Names` AS `Monster_Names`</DefiningQuery>
                 <ScalarProperty Name="Dice_Count" ColumnName="Dice_Count" />
                 <ScalarProperty Name="To_Hit" ColumnName="To_Hit" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Monster_Additional_Notes">
+            <EntityTypeMapping TypeName="pathfinder_managerModel.Monster_Additional_Notes">
+              <MappingFragment StoreEntitySet="Monster_Additional_Notes">
+                <ScalarProperty Name="Monster_ID" ColumnName="Monster_ID" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Dates">
+            <EntityTypeMapping TypeName="pathfinder_managerModel.Date">
+              <MappingFragment StoreEntitySet="Date">
+                <ScalarProperty Name="Time" ColumnName="Time" />
+                <ScalarProperty Name="Year" ColumnName="Year" />
+                <ScalarProperty Name="Day" ColumnName="Day" />
+                <ScalarProperty Name="Month" ColumnName="Month" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

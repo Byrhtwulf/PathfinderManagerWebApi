@@ -5,6 +5,7 @@ using System.Web;
 using System.Data.Entity;
 using PathfinderDatabaseManager.Models;
 using System.Diagnostics;
+using System.Data.Entity.Validation;
 
 namespace PathfinderDatabaseManager.Services
 {
@@ -100,6 +101,19 @@ namespace PathfinderDatabaseManager.Services
                 db.SaveChanges();
 
                 return databaseMonster;
+            }
+            catch (DbEntityValidationException dbEx)
+            {
+                foreach (var validationErrors in dbEx.EntityValidationErrors)
+                {
+                    foreach (var validationError in validationErrors.ValidationErrors)
+                    {
+                        Trace.TraceInformation("Property: {0} Error: {1}",
+                                                validationError.PropertyName,
+                                                validationError.ErrorMessage);
+                    }
+                }
+                return null;
             }
             catch (Exception ex)
             {

@@ -44,8 +44,16 @@ namespace PathfinderDatabaseManager.Controllers
             PathfinderDatabaseManager.Models.Monster newMonster = JsonConvert.DeserializeObject<PathfinderDatabaseManager.Models.Monster>(monsterData.monsterDataString);
             Monster monster = MonsterService.CreateMonster(newMonster);
             Monster_Names name = new Monster_Names();
-            name.ID = monster.ID;
-            name.Name = monster.Name;
+            if (monster != null)
+            {
+                name.ID = monster.ID;
+                name.Name = monster.Name;
+            }
+            else
+            {
+                name.ID = 0;
+                name.Name = "";
+            }
             return name;
         }
 
